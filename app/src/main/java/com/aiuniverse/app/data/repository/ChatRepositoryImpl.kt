@@ -246,10 +246,20 @@ class ChatRepositoryImpl @Inject constructor(
                 }
             }
 
-            "gemini", "nvidia", "sambanova", "cohere", "zai" -> {
+            "gemini", "nvidia", "sambanova", "cohere", "cloudflare" -> {
                 if (apiKey.isBlank()) {
                     throw IllegalStateException(
                         "Add an API key for ${providerId} in Settings > API Keys."
+                    )
+                }
+
+                val cloudflareParts = if (providerId == "cloudflare") apiKey.split("|", limit = 2) else emptyList()
+                if (providerId == "cloudflare" && (cloudflareParts.size != 2 ||
+                        cloudflareParts[0].isBlank() || cloudflareParts[1].isBlank())
+                ) {
+                    throw IllegalStateException(
+                        "Cloudflare key format: enter ACCOUNT_ID|API_TOKEN in Settings > API Keys. " +
+                            "The value is stored locally in encrypted preferences."
                     )
                 }
 
@@ -258,9 +268,12 @@ class ChatRepositoryImpl @Inject constructor(
                     "nvidia" -> "https://integrate.api.nvidia.com/v1/chat/completions"
                     "sambanova" -> "https://api.sambanova.ai/v1/chat/completions"
                     "cohere" -> "https://api.cohere.ai/compatibility/v1/chat/completions"
-                    "zai" -> "https://api.z.ai/api/paas/v4/chat/completions"
+                    "cloudflare" -> "https://api.cloudflare.com/client/v4/accounts/${cloudflareParts[0]}/ai/v1/chat/completions"
                     else -> error("Unsupported provider: $providerId")
                 }
+                val providerAuthorization = if (providerId == "cloudflare") {
+                    "Bearer ${cloudflareParts[1]}"
+                } else authHeader
 
                 // Keep compatibility with the old Gemini model ID saved by v1.0.0.
                 val compatibleRequest = if (
@@ -272,7 +285,7 @@ class ChatRepositoryImpl @Inject constructor(
 
                 val response = genericApi.createChatCompletionStream(
                     url = endpoint,
-                    authorization = authHeader,
+                    authorization = providerAuthorization,
                     request = compatibleRequest
                 )
                 val body = response.body()
