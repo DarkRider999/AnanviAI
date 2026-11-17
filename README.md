@@ -76,6 +76,14 @@ app/src/main/java/com/aiuniverse/app/
 
 ---
 
+## ANANVI AI Command Center
+
+The Android app now includes a Command Center entry point for the social/video connector setup, GitHub project shortcuts, and JARVIS-X / Hermes endpoint checks. Service URLs are stored in DataStore; API credentials and OAuth tokens are not stored by this screen.
+
+The initial GitHub project list is a snapshot of repositories visible to the connected GitHub account. Dynamic private-repository sync requires a GitHub App/OAuth integration in the secured JARVIS-X backend.
+
+See [Command Center integration architecture and security plan](docs/COMMAND_CENTER_INTEGRATION.md) before enabling remote services or provider publishing.
+
 ## 🚀 Getting Started
 
 ### Prerequisites
