@@ -5,7 +5,7 @@ import com.aiuniverse.app.data.local.dao.MessageDao
 import com.aiuniverse.app.data.local.entity.ChatSessionEntity
 import com.aiuniverse.app.data.local.entity.MessageEntity
 import com.aiuniverse.app.data.remote.api.GroqApi
-import com.aiuniverse.app.data.remote.api.HuggingFaceApi
+import com.aiuniverse.app.data.remote.api.HuggingFaceChatApi
 import com.aiuniverse.app.data.remote.api.OllamaApi
 import com.aiuniverse.app.data.remote.api.OpenAIApi
 import com.aiuniverse.app.data.remote.api.OpenRouterApi
@@ -29,7 +29,7 @@ import javax.inject.Singleton
 class ChatRepositoryImpl @Inject constructor(
     private val sessionDao: ChatSessionDao,
     private val messageDao: MessageDao,
-    private val huggingFaceApi: HuggingFaceApi,
+    private val huggingFaceApi: HuggingFaceChatApi,
     private val openRouterApi: OpenRouterApi,
     private val groqApi: GroqApi,
     private val openAiApi: OpenAIApi,
