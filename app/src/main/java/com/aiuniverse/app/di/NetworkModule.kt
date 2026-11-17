@@ -3,6 +3,7 @@ package com.aiuniverse.app.di
 import com.aiuniverse.app.common.Constants
 import com.aiuniverse.app.data.remote.api.GroqApi
 import com.aiuniverse.app.data.remote.api.HuggingFaceApi
+import com.aiuniverse.app.data.remote.api.HuggingFaceChatApi
 import com.aiuniverse.app.data.remote.api.OllamaApi
 import com.aiuniverse.app.data.remote.api.OpenAIApi
 import com.aiuniverse.app.data.remote.api.OpenRouterApi
@@ -51,12 +52,24 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideHuggingFaceApi(okHttpClient: OkHttpClient, gson: Gson): HuggingFaceApi {
+        // Legacy model-task API remains isolated for image-generation calls.
+        return Retrofit.Builder()
+            .baseUrl(Constants.HUGGING_FACE_BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+            .create(HuggingFaceApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideHuggingFaceChatApi(okHttpClient: OkHttpClient, gson: Gson): HuggingFaceChatApi {
         return Retrofit.Builder()
             .baseUrl(Constants.HUGGING_FACE_ROUTER_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
-            .create(HuggingFaceApi::class.java)
+            .create(HuggingFaceChatApi::class.java)
     }
 
     @Provides
