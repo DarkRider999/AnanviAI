@@ -11,6 +11,8 @@ jobs:
   build:
     name: Build AnanviAI APK
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout Source Code
@@ -29,6 +31,11 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+
+      - name: Generate Official Gradle Wrapper Jar
+        run: |
+          rm -f gradle/wrapper/gradle-wrapper.jar
+          gradle wrapper --gradle-version 8.10.2
 
       - name: Make Gradle Wrapper Executable
         run: chmod +x gradlew
@@ -50,10 +57,10 @@ jobs:
           tag_name: v1.0.0
           name: "AnanviAI v1.0.0 (Debug APK)"
           body: |
-            ### AnanviAI v1.0.0 Release
+            ### AnanviAI v1.0.0 Production Release
             Production build of AnanviAI multi-model assistant.
             - Supports Hugging Face, OpenRouter, Groq, Ollama, OpenAI
-            - Llama 3.3, DeepSeek R1, Qwen 2.5, Gemma 2
+            - Free models: Llama 3.3, DeepSeek R1, Qwen 2.5, Gemma 2
             - Side-by-Side Model Comparison
             - AI Tools & Image Generation
           files: app/build/outputs/apk/debug/*.apk
