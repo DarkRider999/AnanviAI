@@ -31,20 +31,14 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
-
-      - name: Generate Official Gradle Wrapper Jar
-        run: |
-          rm -f gradle/wrapper/gradle-wrapper.jar
-          gradle wrapper --gradle-version 8.10.2
-
-      - name: Make Gradle Wrapper Executable
-        run: chmod +x gradlew
+        with:
+          gradle-version: 8.10.2
 
       - name: Run Unit Tests
-        run: ./gradlew testDebugUnitTest --stacktrace --no-daemon
+        run: gradle testDebugUnitTest --stacktrace --no-daemon
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace --no-daemon
+        run: gradle assembleDebug --stacktrace --no-daemon
 
       - name: Upload Debug APK Artifact
         uses: actions/upload-artifact@v4
