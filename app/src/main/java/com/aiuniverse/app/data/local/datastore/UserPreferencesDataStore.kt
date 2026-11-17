@@ -37,11 +37,11 @@ class UserPreferencesDataStore @Inject constructor(
     }
 
     val selectedProviderId: Flow<String> = context.dataStore.data.map { preferences ->
-        preferences[KEY_SELECTED_PROVIDER_ID] ?: "huggingface"
+        preferences[KEY_SELECTED_PROVIDER_ID] ?: "gemini"
     }
 
     val selectedModelId: Flow<String> = context.dataStore.data.map { preferences ->
-        preferences[KEY_SELECTED_MODEL_ID] ?: "meta-llama/Llama-3.1-8B-Instruct"
+        preferences[KEY_SELECTED_MODEL_ID] ?: "gemini-3.8-flash"
     }
 
     suspend fun saveSelectedModel(providerId: String, modelId: String) {
