@@ -194,6 +194,14 @@ fun CommandCenterScreen(
                     color = Color(0xFFFFC66D), fontSize = 11.sp
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    TextButton(enabled = jarvisUrl.startsWith("https://"), onClick = { uriHandler.openUri(jarvisUrl) }) {
+                        Text("Open JARVIS-X")
+                    }
+                    TextButton(enabled = hermesUrl.startsWith("https://"), onClick = { uriHandler.openUri(hermesUrl) }) {
+                        Text("Open Hermes")
+                    }
+                }
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     TextButton(onClick = { uriHandler.openUri("https://github.com/DarkRider999/New-JARVIS-X") }) {
                         Text("JARVIS-X repo")
                         Icon(Icons.Default.OpenInNew, null, modifier = Modifier.size(14.dp))
