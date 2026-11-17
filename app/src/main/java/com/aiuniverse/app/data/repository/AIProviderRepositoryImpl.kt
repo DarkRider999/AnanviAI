@@ -125,6 +125,15 @@ class AIProviderRepositoryImpl @Inject constructor(
             requiresApiKey = true,
             defaultModel = "@cf/zai-org/glm-4.7-flash",
             websiteUrl = "https://dash.cloudflare.com/"
+        ),
+        AIProvider(
+            id = "zai",
+            name = "Z.AI",
+            description = "OpenAI-compatible API with free GLM Flash models. Usage limits are shown in the provider console and can change.",
+            baseUrl = "https://api.z.ai/api/paas/v4",
+            requiresApiKey = true,
+            defaultModel = "glm-4.7-flash",
+            websiteUrl = "https://z.ai/manage-apikey/apikey-list"
         )
     )
 
@@ -347,6 +356,24 @@ class AIProviderRepositoryImpl @Inject constructor(
             name = "Nemotron 3 120B (Cloudflare)",
             providerId = "cloudflare",
             description = "Cloudflare Workers AI free-plan model; shared daily Neurons quota applies.",
+            contextWindow = 128000,
+            isFree = true,
+            category = "Free Tier"
+        ),
+        AIModel(
+            id = "glm-4.7-flash",
+            name = "GLM 4.7 Flash (Z.AI)",
+            providerId = "zai",
+            description = "Z.AI lists GLM-4.7-Flash as free for input and output; rate limits and allowance are shown in the account console.",
+            contextWindow = 200000,
+            isFree = true,
+            category = "Free Tier"
+        ),
+        AIModel(
+            id = "glm-4.5-flash",
+            name = "GLM 4.5 Flash (Z.AI)",
+            providerId = "zai",
+            description = "Z.AI free Flash model; check current account quota and model lifecycle before use.",
             contextWindow = 128000,
             isFree = true,
             category = "Free Tier"
