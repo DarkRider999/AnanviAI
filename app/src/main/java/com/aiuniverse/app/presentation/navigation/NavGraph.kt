@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.aiuniverse.app.presentation.apimanagement.ApiManagementScreen
 import com.aiuniverse.app.presentation.chat.ChatScreen
+import com.aiuniverse.app.presentation.commandcenter.CommandCenterScreen
 import com.aiuniverse.app.presentation.compare.ModelComparisonScreen
 import com.aiuniverse.app.presentation.history.HistoryScreen
 import com.aiuniverse.app.presentation.home.HomeScreen
@@ -71,7 +72,8 @@ fun NavGraph(
                 onNavigateToImageGen = { navController.navigate(Screen.ImageGeneration.route) },
                 onNavigateToSettings = { navController.navigate(Screen.Settings.route) },
                 onNavigateToApiManagement = { navController.navigate(Screen.ApiManagement.route) },
-                onNavigateToHistory = { navController.navigate(Screen.History.route) }
+                onNavigateToHistory = { navController.navigate(Screen.History.route) },
+                onNavigateToCommandCenter = { navController.navigate(Screen.CommandCenter.route) }
             )
         }
 
@@ -140,6 +142,12 @@ fun NavGraph(
 
         composable(Screen.ApiManagement.route) {
             ApiManagementScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Screen.CommandCenter.route) {
+            CommandCenterScreen(
                 onNavigateBack = { navController.popBackStack() }
             )
         }
