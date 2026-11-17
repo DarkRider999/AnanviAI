@@ -14,8 +14,8 @@ class ExecuteAiToolUseCase @Inject constructor(
         tool: AiToolType,
         input: String,
         targetLanguageOrOptions: String? = null,
-        providerId: String = "huggingface",
-        modelId: String = "meta-llama/Llama-3.1-8B-Instruct"
+        providerId: String = "gemini",
+        modelId: String = "gemini-3.8-flash"
     ): Flow<String> {
         val engineeredPrompt = buildString {
             append(tool.promptTemplate)

@@ -92,12 +92,46 @@ app/src/main/java/com/aiuniverse/app/
 
 ---
 
-## 🔑 Setting Up Free Hugging Face & OpenRouter API Keys
+## Free-first provider catalogue
 
-1. Navigate to **API Keys** inside the app.
-2. For Hugging Face:
-   - Obtain a free User Access Token from: [https://huggingface.co/settings/tokens](https://huggingface.co/settings/tokens)
-   - Paste the token into the Hugging Face section and tap **Save Key**.
-3. For OpenRouter / Groq:
-   - Obtain free keys from [https://openrouter.ai/keys](https://openrouter.ai/keys) or [https://console.groq.com/keys](https://console.groq.com/keys).
-   - Enter and test the connection.
+The built-in catalogue includes existing integrations and these additional OpenAI-compatible providers:
+
+| Provider | Access type | API setup |
+|---|---|---|
+| Google Gemini | Limited free tier for selected models | [Google AI Studio](https://aistudio.google.com/apikey) |
+| NVIDIA NIM | Selected catalog endpoints are marked free; availability varies | [NVIDIA Build](https://build.nvidia.com/) |
+| Cloudflare Workers AI | Workers Free includes 10,000 Neurons/day; model restrictions apply | [Cloudflare Dashboard](https://dash.cloudflare.com/) |
+| Z.AI | GLM-4.7-Flash and selected GLM Flash models are listed as free; limits are shown in the console | [Z.AI API Keys](https://z.ai/manage-apikey/apikey-list) |
+| SambaNova Cloud | Free access/quotas depend on current account eligibility | [SambaNova Cloud](https://cloud.sambanova.ai/) |
+| Cohere | Trial/evaluation access only; not a perpetual free tier | [Cohere API Keys](https://dashboard.cohere.com/api-keys) |
+| OpenRouter | Models ending in `:free` have a limited free quota | [OpenRouter Keys](https://openrouter.ai/keys) |
+| Groq | Free plan with per-model limits | [Groq Console](https://console.groq.com/keys) |
+
+Existing integrations remain available: Hugging Face, OpenRouter, Groq, Together AI, Ollama, OpenAI, Anthropic and Gemini. Existing provider IDs are retained so saved credentials remain associated with their original providers.
+
+### Cloudflare key format
+
+Cloudflare requires both an account ID and an API token. In the Cloudflare API key field, enter:
+
+`ACCOUNT_ID|API_TOKEN`
+
+The combined value is stored locally in the encrypted credential store. Use a token with the Workers AI permission required by Cloudflare's API.
+
+### Free does not mean unlimited
+
+Provider quotas, eligible models, account requirements, rate limits and data-use terms change. The app labels limited/trial access separately and does not promise unlimited or permanently free inference. Check each provider's current dashboard before relying on a model in production.
+
+### Credential security and migration
+
+- Existing provider IDs and saved keys are preserved; new providers use new, separate key IDs.
+- Credentials remain local to the Android app and are not committed to this repository.
+- API keys are stored with Android Keystore-backed EncryptedSharedPreferences.
+- Existing encrypted keys are migrated to the current encrypted store. Legacy plaintext-fallback entries, if present from an older build, are copied into the encrypted store before their legacy entries are removed.
+- If Android Keystore cannot be initialized, the app fails closed instead of silently saving new credentials in plaintext.
+- Credential preference files are excluded from Android cloud backup and device transfer.
+- Never paste API keys into GitHub issues, commits, screenshots or logs.
+
+### Existing providers and paid services
+
+OpenAI, Anthropic, Together AI and some models available through other providers may incur charges. They remain in the app for compatibility with your existing credentials; they are not represented as free services.
+

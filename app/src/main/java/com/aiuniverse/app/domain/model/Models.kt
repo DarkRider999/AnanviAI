@@ -134,7 +134,7 @@ data class UserProfile(
     val avatarUri: String? = null,
     val customSystemPrompt: String = "You are AnanviAI, a hyper-capable, versatile, and thoughtful assistant.",
     val totalTokensUsed: Long = 0L,
-    val favoriteModelId: String = "meta-llama/Llama-3.1-8B-Instruct"
+    val favoriteModelId: String = "gemini-3.8-flash"
 )
 
 data class AppSettings(
@@ -142,8 +142,8 @@ data class AppSettings(
     val streamResponses: Boolean = true,
     val hapticFeedback: Boolean = true,
     val soundEffects: Boolean = false,
-    val defaultProviderId: String = "huggingface",
-    val defaultModelId: String = "meta-llama/Llama-3.1-8B-Instruct",
+    val defaultProviderId: String = "gemini",
+    val defaultModelId: String = "gemini-3.8-flash",
     val temperature: Float = 0.7f,
     val topP: Float = 0.9f
 )

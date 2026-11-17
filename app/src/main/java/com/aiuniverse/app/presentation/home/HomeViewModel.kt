@@ -37,8 +37,8 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val session = chatRepository.createSession(
                 title = "New Chat",
-                providerId = "huggingface",
-                modelId = "meta-llama/Llama-3.1-8B-Instruct"
+                providerId = "gemini",
+                modelId = "gemini-3.8-flash"
             )
             onCreated(session.id)
         }

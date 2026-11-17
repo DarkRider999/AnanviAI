@@ -57,13 +57,15 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.0.1
-          name: "AnanviAI v1.0.1 (Debug APK)"
+          tag_name: v1.1.0
+          name: "AnanviAI v1.1.0 (Debug APK)"
           body: |
-            ### AnanviAI v1.0.1 Debug Build
+            ### AnanviAI v1.1.0 Debug Build
             Production build of AnanviAI multi-model assistant.
-            - Supports Hugging Face, OpenRouter, Groq, Ollama, OpenAI
-            - Free models: Llama 3.3, DeepSeek R1, Qwen 2.5, Gemma 2
+            - Preserves existing Hugging Face, OpenRouter, Groq, Together AI, Ollama, OpenAI, Anthropic and Gemini provider IDs/keys
+            - Adds direct Gemini, NVIDIA NIM, Cloudflare Workers AI, SambaNova and Cohere trial integrations
+            - Adds a free-first model catalogue with free-tier/trial labels and quota notes
+            - Migrates existing API keys into encrypted Android Keystore-backed preferences and excludes credential files from backups
             - Side-by-Side Model Comparison
             - AI Tools & Image Generation
           files: app/build/outputs/apk/debug/*.apk

@@ -84,11 +84,56 @@ class AIProviderRepositoryImpl @Inject constructor(
         AIProvider(
             id = "gemini",
             name = "Google Gemini",
-            description = "Gemini 1.5 Pro and Flash multimodal intelligence.",
-            baseUrl = "https://openrouter.ai/api/v1",
+            description = "Direct Google AI Studio API. Includes limited free-tier Gemini models; quotas and data terms apply.",
+            baseUrl = "https://generativelanguage.googleapis.com/v1beta/openai",
             requiresApiKey = true,
-            defaultModel = "google/gemini-flash-1.5",
-            websiteUrl = "https://aistudio.google.com"
+            defaultModel = "gemini-3.8-flash",
+            websiteUrl = "https://aistudio.google.com/apikey"
+        ),
+        AIProvider(
+            id = "nvidia",
+            name = "NVIDIA NIM",
+            description = "NVIDIA hosted model catalog. Only use endpoints explicitly marked free in the NVIDIA catalog; other models may require paid access.",
+            baseUrl = "https://integrate.api.nvidia.com/v1",
+            requiresApiKey = true,
+            defaultModel = "openai/gpt-oss-20b",
+            websiteUrl = "https://build.nvidia.com/"
+        ),
+        AIProvider(
+            id = "sambanova",
+            name = "SambaNova Cloud",
+            description = "OpenAI-compatible inference API. Free access and daily/model quotas depend on current account eligibility.",
+            baseUrl = "https://api.sambanova.ai/v1",
+            requiresApiKey = true,
+            defaultModel = "DeepSeek-R1",
+            websiteUrl = "https://cloud.sambanova.ai/"
+        ),
+        AIProvider(
+            id = "cohere",
+            name = "Cohere (Trial)",
+            description = "Evaluation/trial API access only; not a guaranteed ongoing free tier. Check model pricing and trial limits before use.",
+            baseUrl = "https://api.cohere.ai/compatibility/v1",
+            requiresApiKey = true,
+            defaultModel = "command-r7b-12-2024",
+            websiteUrl = "https://dashboard.cohere.com/api-keys"
+        ),
+        AIProvider(
+            id = "cloudflare",
+            name = "Cloudflare Workers AI",
+            description = "Free Workers plan includes 10,000 Neurons/day. Requires Account ID and API token entered as ACCOUNT_ID|API_TOKEN.",
+            baseUrl = "https://api.cloudflare.com/client/v4/accounts/{account_id}/ai/v1",
+            requiresApiKey = true,
+            defaultModel = "@cf/zai-org/glm-4.7-flash",
+            websiteUrl = "https://dash.cloudflare.com/"
+        ),
+        AIProvider(
+            id = "zai",
+            name = "Z.AI",
+            description = "OpenAI-compatible API with free GLM Flash models. Usage limits are shown in the provider console and can change.",
+            baseUrl = "https://api.z.ai/api/paas/v4",
+            requiresApiKey = true,
+            defaultModel = "glm-4.7-flash",
+            websiteUrl = "https://z.ai/manage-apikey/apikey-list"
         )
     )
 
@@ -236,28 +281,126 @@ class AIProviderRepositoryImpl @Inject constructor(
             contextWindow = 128000,
             isFree = false,
             category = "Flagship"
+        ),
+        // Direct Google AI Studio free-tier models. Free quotas are limited and can change.
+        AIModel(
+            id = "gemini-3.8-flash",
+            name = "Gemini 3.8 Flash",
+            providerId = "gemini",
+            description = "Google AI Studio free-tier model; limited quotas apply and free-tier data terms differ from paid usage.",
+            contextWindow = 1000000,
+            isFree = true,
+            category = "Free Tier",
+            isMultimodal = true
+        ),
+        AIModel(
+            id = "gemini-3.1-flash-lite",
+            name = "Gemini 3.1 Flash-Lite",
+            providerId = "gemini",
+            description = "Lightweight Gemini model listed with free input and output on the current free tier; quota applies.",
+            contextWindow = 1000000,
+            isFree = true,
+            category = "Free Tier",
+            isMultimodal = true
+        ),
+        // NVIDIA Build hosted free endpoint (check endpoint status in NVIDIA catalog).
+        AIModel(
+            id = "openai/gpt-oss-20b",
+            name = "GPT-OSS 20B (NVIDIA)",
+            providerId = "nvidia",
+            description = "Open-weight model available for download; hosted API access and pricing depend on the selected NVIDIA endpoint.",
+            contextWindow = 131072,
+            isFree = false,
+            category = "Hosted pricing varies"
+        ),
+        // SambaNova free access is account/quota dependent; availability is not guaranteed.
+        AIModel(
+            id = "DeepSeek-R1",
+            name = "DeepSeek R1 (SambaNova)",
+            providerId = "sambanova",
+            description = "SambaNova hosted reasoning model. Check current dashboard quota and model availability.",
+            contextWindow = 65536,
+            isFree = true,
+            category = "Limited Free Tier"
+        ),
+        // Cohere trial keys are evaluation-only, not a perpetual free API.
+        AIModel(
+            id = "command-r7b-12-2024",
+            name = "Command R7B (Trial)",
+            providerId = "cohere",
+            description = "Cohere evaluation model. Trial access is limited; check pricing before production use.",
+            contextWindow = 128000,
+            isFree = false,
+            category = "Trial"
+        ),
+        AIModel(
+            id = "@cf/zai-org/glm-4.7-flash",
+            name = "GLM 4.7 Flash (Cloudflare)",
+            providerId = "cloudflare",
+            description = "Listed by Cloudflare as available on the Workers Free plan. 10,000 Neurons/day shared across the account; model limits apply.",
+            contextWindow = 128000,
+            isFree = true,
+            category = "Free Tier"
+        ),
+        AIModel(
+            id = "@cf/google/gemma-4-26b-a4b-it",
+            name = "Gemma 4 26B (Cloudflare)",
+            providerId = "cloudflare",
+            description = "Cloudflare Workers AI free-plan model; shared daily Neurons quota applies.",
+            contextWindow = 128000,
+            isFree = true,
+            category = "Free Tier"
+        ),
+        AIModel(
+            id = "@cf/nvidia/nemotron-3-120b-a12b",
+            name = "Nemotron 3 120B (Cloudflare)",
+            providerId = "cloudflare",
+            description = "Cloudflare Workers AI free-plan model; shared daily Neurons quota applies.",
+            contextWindow = 128000,
+            isFree = true,
+            category = "Free Tier"
+        ),
+        AIModel(
+            id = "glm-4.7-flash",
+            name = "GLM 4.7 Flash (Z.AI)",
+            providerId = "zai",
+            description = "Z.AI lists GLM-4.7-Flash as free for input and output; rate limits and allowance are shown in the account console.",
+            contextWindow = 200000,
+            isFree = true,
+            category = "Free Tier"
+        ),
+        AIModel(
+            id = "glm-4.5-flash",
+            name = "GLM 4.5 Flash (Z.AI)",
+            providerId = "zai",
+            description = "Z.AI free Flash model; check current account quota and model lifecycle before use.",
+            contextWindow = 128000,
+            isFree = true,
+            category = "Free Tier"
         )
     )
 
     override fun getProviders(): Flow<List<AIProvider>> {
         return providerDao.getAllProviders().map { entities ->
-            if (entities.isEmpty()) {
-                staticProviders.map { p ->
-                    p.copy(isConfigured = !p.requiresApiKey || keyStorage.hasApiKey(p.id))
-                }
-            } else {
-                entities.map { entity ->
-                    entity.toDomain().copy(
-                        isConfigured = !entity.requiresApiKey || keyStorage.hasApiKey(entity.id)
-                    )
-                }
+            val storedById = entities.associateBy { it.id }.toMutableMap()
+            val merged = staticProviders.map { provider ->
+                storedById.remove(provider.id)
+                provider.copy(
+                    isConfigured = !provider.requiresApiKey || keyStorage.hasApiKey(provider.id)
+                )
+            }
+            // Preserve custom providers already stored in Room while always exposing new built-ins.
+            merged + storedById.values.map { entity ->
+                entity.toDomain().copy(
+                    isConfigured = !entity.requiresApiKey || keyStorage.hasApiKey(entity.id)
+                )
             }
         }
     }
 
     override fun getProvider(id: String): Flow<AIProvider?> {
         return providerDao.getProviderFlow(id).map { entity ->
-            val p = entity?.toDomain() ?: staticProviders.find { it.id == id }
+            val p = staticProviders.find { it.id == id } ?: entity?.toDomain()
             p?.copy(isConfigured = !p.requiresApiKey || keyStorage.hasApiKey(p.id))
         }
     }

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <data-extraction-rules>
     <cloud-backup>
-        <exclude domain="sharedpref" path="encrypted_api_keys.xml"/>
+        <exclude domain="sharedpref" path="ananviai_secure_keys.xml" />
+        <exclude domain="sharedpref" path="ananviai_secure_keys_v2.xml" />
     </cloud-backup>
     <device-transfer>
-        <exclude domain="sharedpref" path="encrypted_api_keys.xml"/>
+        <exclude domain="sharedpref" path="ananviai_secure_keys.xml" />
+        <exclude domain="sharedpref" path="ananviai_secure_keys_v2.xml" />
     </device-transfer>
 </data-extraction-rules>
