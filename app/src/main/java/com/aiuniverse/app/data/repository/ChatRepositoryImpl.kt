@@ -160,7 +160,32 @@ class ChatRepositoryImpl @Inject constructor(
                 val body = response.body()
 
                 if (response.isSuccessful && body != null) {
-                    sseParser.parseOpenAiFormatStream(body).collect { emit(it) }
+                    val contentType = body.contentType()?.toString().orEmpty()
+                    if (!contentType.contains("text/event-stream", ignoreCase = true)) {
+                        val unexpectedBody = body.string()
+                        val isHtml = unexpectedBody.contains("<html", ignoreCase = true) ||
+                            unexpectedBody.contains("<!doctype html", ignoreCase = true)
+                        val detail = if (isHtml) {
+                            "Hugging Face returned an HTML page instead of model output. " +
+                                "This usually indicates a proxy, routing, or endpoint error."
+                        } else {
+                            "Expected a streaming response but received Content-Type: " +
+                                (contentType.ifBlank { "unknown" }) + ". " +
+                                unexpectedBody.take(300)
+                        }
+                        throw IllegalStateException(detail)
+                    }
+                    var receivedAnyText = false
+                    sseParser.parseOpenAiFormatStream(body).collect {
+                        receivedAnyText = true
+                        emit(it)
+                    }
+                    if (!receivedAnyText) {
+                        throw IllegalStateException(
+                            "Hugging Face returned an empty stream. Check model availability, " +
+                                "Inference Providers permissions, and token credits."
+                        )
+                    }
                 } else {
                     val errorBody = response.errorBody()?.string().orEmpty()
                     val isHtml = errorBody.contains("<html", ignoreCase = true) ||
