@@ -31,7 +31,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+            // Intentionally unsigned unless a protected production signing config is supplied.
         }
         debug {
             applicationIdSuffix = ".debug"
