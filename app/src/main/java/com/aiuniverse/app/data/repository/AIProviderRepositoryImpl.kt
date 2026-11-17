@@ -93,7 +93,7 @@ class AIProviderRepositoryImpl @Inject constructor(
         AIProvider(
             id = "nvidia",
             name = "NVIDIA NIM",
-            description = "Hosted NVIDIA API catalog. Selected endpoints are currently marked free; availability and limits vary by model.",
+            description = "NVIDIA hosted model catalog. Only use endpoints explicitly marked free in the NVIDIA catalog; other models may require paid access.",
             baseUrl = "https://integrate.api.nvidia.com/v1",
             requiresApiKey = true,
             defaultModel = "openai/gpt-oss-20b",
@@ -299,10 +299,10 @@ class AIProviderRepositoryImpl @Inject constructor(
             id = "openai/gpt-oss-20b",
             name = "GPT-OSS 20B (NVIDIA)",
             providerId = "nvidia",
-            description = "NVIDIA Build free endpoint listing; model availability and limits may change.",
+            description = "Open-weight model available for download; hosted API access and pricing depend on the selected NVIDIA endpoint.",
             contextWindow = 131072,
-            isFree = true,
-            category = "Free Endpoint"
+            isFree = false,
+            category = "Hosted pricing varies"
         ),
         // SambaNova free access is account/quota dependent; availability is not guaranteed.
         AIModel(
