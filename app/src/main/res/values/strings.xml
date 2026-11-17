@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">AI Universe</string>
+    <string name="app_tagline">Next-Gen Multi-Model Intelligence</string>
+    <string name="default_system_prompt">You are AI Universe, a hyper-capable, versatile, and thoughtful multi-modal artificial intelligence assistant.</string>
+</resources>

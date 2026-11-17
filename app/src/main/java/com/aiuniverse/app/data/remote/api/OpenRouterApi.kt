@@ -1,0 +1,30 @@
+package com.aiuniverse.app.data.remote.api
+
+import com.aiuniverse.app.data.remote.dto.ChatCompletionRequest
+import com.aiuniverse.app.data.remote.dto.ChatCompletionResponse
+import okhttp3.ResponseBody
+import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.Header
+import retrofit2.http.POST
+import retrofit2.http.Streaming
+
+interface OpenRouterApi {
+
+    @Streaming
+    @POST("chat/completions")
+    suspend fun createChatCompletionStream(
+        @Header("Authorization") authHeader: String,
+        @Header("HTTP-Referer") referer: String = "https://aiuniverse.app",
+        @Header("X-Title") appTitle: String = "AI Universe Android",
+        @Body request: ChatCompletionRequest
+    ): Response<ResponseBody>
+
+    @POST("chat/completions")
+    suspend fun createChatCompletion(
+        @Header("Authorization") authHeader: String,
+        @Header("HTTP-Referer") referer: String = "https://aiuniverse.app",
+        @Header("X-Title") appTitle: String = "AI Universe Android",
+        @Body request: ChatCompletionRequest
+    ): Response<ChatCompletionResponse>
+}

@@ -1,0 +1,295 @@
+package com.aiuniverse.app.data.repository
+
+import com.aiuniverse.app.data.local.dao.AIProviderDao
+import com.aiuniverse.app.data.local.entity.AIProviderEntity
+import com.aiuniverse.app.domain.model.AIModel
+import com.aiuniverse.app.domain.model.AIProvider
+import com.aiuniverse.app.domain.repository.AIProviderRepository
+import com.aiuniverse.app.security.SecureKeyStorage
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class AIProviderRepositoryImpl @Inject constructor(
+    private val providerDao: AIProviderDao,
+    private val keyStorage: SecureKeyStorage
+) : AIProviderRepository {
+
+    private val staticProviders = listOf(
+        AIProvider(
+            id = "huggingface",
+            name = "Hugging Face",
+            description = "Open source hub with tens of thousands of free & specialized AI models.",
+            baseUrl = "https://api-inference.huggingface.co",
+            requiresApiKey = true,
+            defaultModel = "meta-llama/Llama-3.1-8B-Instruct",
+            websiteUrl = "https://huggingface.co/settings/tokens"
+        ),
+        AIProvider(
+            id = "openrouter",
+            name = "OpenRouter",
+            description = "Unified gateway providing access to DeepSeek, Llama, Claude, and dozens of free models.",
+            baseUrl = "https://openrouter.ai/api/v1",
+            requiresApiKey = true,
+            defaultModel = "meta-llama/llama-3.1-8b-instruct:free",
+            websiteUrl = "https://openrouter.ai/keys"
+        ),
+        AIProvider(
+            id = "groq",
+            name = "Groq LPU",
+            description = "Ultra-fast hardware LPUs offering lightning inference speeds (>500 tokens/sec).",
+            baseUrl = "https://api.groq.com/openai/v1",
+            requiresApiKey = true,
+            defaultModel = "llama-3.3-70b-versatile",
+            websiteUrl = "https://console.groq.com/keys"
+        ),
+        AIProvider(
+            id = "together",
+            name = "Together AI",
+            description = "Decentralized cloud platform for open-source AI models.",
+            baseUrl = "https://api.together.xyz/v1",
+            requiresApiKey = true,
+            defaultModel = "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo",
+            websiteUrl = "https://api.together.ai/settings/api-keys"
+        ),
+        AIProvider(
+            id = "ollama",
+            name = "Ollama Local",
+            description = "Run private, offline local LLMs directly on your network/device.",
+            baseUrl = "http://10.0.2.2:11434",
+            requiresApiKey = false,
+            defaultModel = "llama3.1",
+            websiteUrl = "https://ollama.com"
+        ),
+        AIProvider(
+            id = "openai",
+            name = "OpenAI",
+            description = "Industry standard models including GPT-4o, GPT-4o-mini, and DALL-E 3.",
+            baseUrl = "https://api.openai.com/v1",
+            requiresApiKey = true,
+            defaultModel = "gpt-4o-mini",
+            websiteUrl = "https://platform.openai.com/api-keys"
+        ),
+        AIProvider(
+            id = "anthropic",
+            name = "Anthropic",
+            description = "Claude 3.5 Sonnet and Haiku via OpenRouter or direct endpoint.",
+            baseUrl = "https://openrouter.ai/api/v1",
+            requiresApiKey = true,
+            defaultModel = "anthropic/claude-3.5-sonnet",
+            websiteUrl = "https://console.anthropic.com"
+        ),
+        AIProvider(
+            id = "gemini",
+            name = "Google Gemini",
+            description = "Gemini 1.5 Pro and Flash multimodal intelligence.",
+            baseUrl = "https://openrouter.ai/api/v1",
+            requiresApiKey = true,
+            defaultModel = "google/gemini-flash-1.5",
+            websiteUrl = "https://aistudio.google.com"
+        )
+    )
+
+    private val staticModels = listOf(
+        // Hugging Face
+        AIModel(
+            id = "meta-llama/Llama-3.1-8B-Instruct",
+            name = "Llama 3.1 8B Instruct",
+            providerId = "huggingface",
+            description = "Meta's highly optimized, state-of-the-art open model with 128k context.",
+            contextWindow = 131072,
+            isFree = true,
+            category = "General"
+        ),
+        AIModel(
+            id = "deepseek-ai/DeepSeek-R1",
+            name = "DeepSeek R1 Reasoning",
+            providerId = "huggingface",
+            description = "Breakthrough open reasoning model competing with OpenAI o1.",
+            contextWindow = 65536,
+            isFree = true,
+            category = "Reasoning & Math"
+        ),
+        AIModel(
+            id = "mistralai/Mistral-7B-Instruct-v0.3",
+            name = "Mistral 7B Instruct",
+            providerId = "huggingface",
+            description = "Fast, versatile European language model with function calling.",
+            contextWindow = 32768,
+            isFree = true,
+            category = "General"
+        ),
+        AIModel(
+            id = "Qwen/Qwen2.5-7B-Instruct",
+            name = "Qwen 2.5 7B",
+            providerId = "huggingface",
+            description = "Alibaba's benchmark leader in math, coding, and multilingual tasks.",
+            contextWindow = 32768,
+            isFree = true,
+            category = "Multilingual"
+        ),
+
+        // OpenRouter Free Models
+        AIModel(
+            id = "meta-llama/llama-3.1-8b-instruct:free",
+            name = "Llama 3.1 8B (Free)",
+            providerId = "openrouter",
+            description = "Community free tier with zero API cost on OpenRouter.",
+            contextWindow = 131072,
+            isFree = true,
+            category = "Free Tier"
+        ),
+        AIModel(
+            id = "deepseek/deepseek-r1:free",
+            name = "DeepSeek R1 (Free)",
+            providerId = "openrouter",
+            description = "Full reasoning traces and deep analytical breakdown without tokens cost.",
+            contextWindow = 65536,
+            isFree = true,
+            category = "Free Reasoning"
+        ),
+        AIModel(
+            id = "qwen/qwen-2.5-coder-32b-instruct",
+            name = "Qwen 2.5 Coder 32B",
+            providerId = "openrouter",
+            description = "Elite coding model rivaling proprietary code generators.",
+            contextWindow = 32768,
+            isFree = false,
+            category = "Code & Tech"
+        ),
+
+        // Groq
+        AIModel(
+            id = "llama-3.3-70b-versatile",
+            name = "Llama 3.3 70B (Groq LPUs)",
+            providerId = "groq",
+            description = "Extreme inference performance at over 300 words per second.",
+            contextWindow = 128000,
+            isFree = true,
+            category = "Ultra Fast"
+        ),
+        AIModel(
+            id = "deepseek-r1-distill-llama-70b",
+            name = "DeepSeek R1 Distill 70B",
+            providerId = "groq",
+            description = "Reasoning model running with sub-second time-to-first-token.",
+            contextWindow = 128000,
+            isFree = true,
+            category = "Reasoning"
+        ),
+        AIModel(
+            id = "gemma2-9b-it",
+            name = "Gemma 2 9B (Groq)",
+            providerId = "groq",
+            description = "Google's lightweight, punchy conversational architecture.",
+            contextWindow = 8192,
+            isFree = true,
+            category = "General"
+        ),
+
+        // Ollama Local
+        AIModel(
+            id = "llama3.1",
+            name = "Llama 3.1 Local",
+            providerId = "ollama",
+            description = "Self-hosted local model running completely private on your LAN.",
+            contextWindow = 8192,
+            isFree = true,
+            category = "Offline Private"
+        ),
+        AIModel(
+            id = "deepseek-coder",
+            name = "DeepSeek Coder Local",
+            providerId = "ollama",
+            description = "Private offline code assistant running through local Ollama instance.",
+            contextWindow = 16384,
+            isFree = true,
+            category = "Offline Code"
+        ),
+        AIModel(
+            id = "phi4",
+            name = "Microsoft Phi-4 Local",
+            providerId = "ollama",
+            description = "Microsoft's 14B synthetic-data powerhouse running locally.",
+            contextWindow = 16384,
+            isFree = true,
+            category = "Math & Reasoning"
+        ),
+
+        // OpenAI
+        AIModel(
+            id = "gpt-4o-mini",
+            name = "GPT-4o Mini",
+            providerId = "openai",
+            description = "Fast, cost-efficient multimodal intelligence from OpenAI.",
+            contextWindow = 128000,
+            isFree = false,
+            category = "Multimodal"
+        ),
+        AIModel(
+            id = "gpt-4o",
+            name = "GPT-4o",
+            providerId = "openai",
+            description = "Flagship high-intelligence multimodal model.",
+            contextWindow = 128000,
+            isFree = false,
+            category = "Flagship"
+        )
+    )
+
+    override fun getProviders(): Flow<List<AIProvider>> {
+        return providerDao.getAllProviders().map { entities ->
+            if (entities.isEmpty()) {
+                staticProviders.map { p ->
+                    p.copy(isConfigured = !p.requiresApiKey || keyStorage.hasApiKey(p.id))
+                }
+            } else {
+                entities.map { entity ->
+                    entity.toDomain().copy(
+                        isConfigured = !entity.requiresApiKey || keyStorage.hasApiKey(entity.id)
+                    )
+                }
+            }
+        }
+    }
+
+    override fun getProvider(id: String): Flow<AIProvider?> {
+        return providerDao.getProviderFlow(id).map { entity ->
+            val p = entity?.toDomain() ?: staticProviders.find { it.id == id }
+            p?.copy(isConfigured = !p.requiresApiKey || keyStorage.hasApiKey(p.id))
+        }
+    }
+
+    override suspend fun getAvailableModels(providerId: String): List<AIModel> {
+        return staticModels.filter { it.providerId == providerId }
+    }
+
+    override suspend fun getAllAvailableModels(): List<AIModel> {
+        return staticModels
+    }
+
+    override fun getApiKey(providerId: String): String {
+        return keyStorage.getApiKey(providerId)
+    }
+
+    override suspend fun saveApiKey(providerId: String, apiKey: String) {
+        keyStorage.saveApiKey(providerId, apiKey)
+        providerDao.updateConfigurationStatus(providerId, apiKey.isNotBlank())
+    }
+
+    override suspend fun removeApiKey(providerId: String) {
+        keyStorage.removeApiKey(providerId)
+        providerDao.updateConfigurationStatus(providerId, false)
+    }
+
+    override suspend fun testConnection(providerId: String): Boolean {
+        // Returns true if provider either doesn't need key (like Ollama) or has key configured
+        return if (providerId == "ollama") {
+            true
+        } else {
+            keyStorage.hasApiKey(providerId)
+        }
+    }
+}

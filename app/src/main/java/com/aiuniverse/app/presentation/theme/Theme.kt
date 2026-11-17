@@ -1,0 +1,78 @@
+package com.aiuniverse.app.presentation.theme
+
+import android.app.Activity
+import android.os.Build
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
+
+private val DarkColorScheme = darkColorScheme(
+    primary = CosmicViolet,
+    onPrimary = Color.White,
+    primaryContainer = Color(0xFF261D52),
+    onPrimaryContainer = Color(0xFFEADBFF),
+    secondary = ElectricCyan,
+    onSecondary = SpaceBlack,
+    secondaryContainer = Color(0xFF004F58),
+    tertiary = NeonEmerald,
+    background = SpaceBlack,
+    surface = DeepObsidian,
+    surfaceVariant = SurfaceDark,
+    onBackground = TextPrimary,
+    onSurface = TextPrimary,
+    onSurfaceVariant = TextSecondary,
+    outline = GlassBorder
+)
+
+private val LightColorScheme = lightColorScheme(
+    primary = CosmicViolet,
+    onPrimary = Color.White,
+    secondary = Color(0xFF007A87),
+    background = Color(0xFFF8FAFC),
+    surface = Color.White,
+    onBackground = Color(0xFF0F172A),
+    onSurface = Color(0xFF0F172A)
+)
+
+@Composable
+fun AIUniverseTheme(
+    darkTheme: Boolean = true, // Default to stunning cosmic dark
+    dynamicColor: Boolean = false,
+    content: @Composable () -> Unit
+) {
+    val colorScheme = when {
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            val context = LocalContext.current
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        }
+        darkTheme -> DarkColorScheme
+        else -> LightColorScheme
+    }
+
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            window.statusBarColor = Color.Transparent.toArgb()
+            window.navigationBarColor = Color.Transparent.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+        }
+    }
+
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = Typography,
+        shapes = Shapes,
+        content = content
+    )
+}
