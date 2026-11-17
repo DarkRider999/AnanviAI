@@ -4,26 +4,50 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
     <path
-        android:fillColor="#0B0E17"
+        android:fillColor="#090B12"
         android:pathData="M0,0h108v108h-108z" />
-    <!-- Glowing outer cosmic ring -->
     <path
         android:fillColor="#00000000"
-        android:strokeColor="#6C5CE7"
-        android:strokeWidth="3.5"
-        android:pathData="M54,18 A36,36 0 1,1 53.9,18" />
-    <!-- Dynamic orbital ellipse -->
-    <path
-        android:fillColor="#00000000"
-        android:strokeColor="#00D2D3"
+        android:strokeColor="#8E202B"
         android:strokeWidth="2.5"
-        android:pathData="M24,54 C24,40 84,40 84,54 C84,68 24,68 24,54 Z" />
-    <!-- Central AI Core Spark -->
+        android:pathData="M54,7 A47,47 0 1,1 53.9,7" />
     <path
-        android:fillColor="#A29BFE"
-        android:pathData="M54,34 L58,50 L74,54 L58,58 L54,74 L50,58 L34,54 L50,50 Z" />
-    <!-- Secondary quantum node -->
+        android:fillColor="#00000000"
+        android:strokeColor="#F05A43"
+        android:strokeWidth="1"
+        android:pathData="M54,13 A41,41 0 1,1 53.9,13" />
+    <!-- Left wing: layered rising flame feathers -->
     <path
-        android:fillColor="#00D2D3"
-        android:pathData="M72,36 A4,4 0 1,1 71.9,36" />
+        android:fillColor="#B51F32"
+        android:pathData="M51,49 C42,37 32,27 18,23 C21,34 27,44 37,52 C28,48 19,48 11,52 C22,58 32,63 40,72 C36,76 33,81 32,87 C43,83 50,75 54,64 Z" />
+    <!-- Right wing -->
+    <path
+        android:fillColor="#B51F32"
+        android:pathData="M57,49 C66,37 76,27 90,23 C87,34 81,44 71,52 C80,48 89,48 97,52 C86,58 76,63 68,72 C72,76 75,81 76,87 C65,83 58,75 54,64 Z" />
+    <!-- Wing highlights -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#F05A43"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M22,34 C33,38 41,46 49,56 M17,53 C29,54 39,59 47,67 M86,34 C75,38 67,46 59,56 M91,53 C79,54 69,59 61,67" />
+    <!-- Phoenix breast and rising body -->
+    <path
+        android:fillColor="#F05A43"
+        android:pathData="M54,25 C47,32 44,40 48,49 C50,54 52,60 54,70 C56,60 58,54 60,49 C64,40 61,32 54,25 Z" />
+    <!-- Crown / flame crest -->
+    <path
+        android:fillColor="#FFC15A"
+        android:pathData="M54,15 C47,20 45,27 48,34 C51,32 53,29 54,25 C55,29 57,32 60,34 C63,27 61,20 54,15 Z" />
+    <!-- Tail feathers -->
+    <path
+        android:fillColor="#E43B3D"
+        android:pathData="M49,65 C43,72 43,81 47,91 C51,85 53,77 54,69 C55,77 57,85 61,91 C65,81 65,72 59,65 Z" />
+    <path
+        android:fillColor="#FFC15A"
+        android:pathData="M54,76 C50,82 51,89 54,96 C57,89 58,82 54,76 Z" />
+    <!-- Eye / core -->
+    <path
+        android:fillColor="#FFF0D0"
+        android:pathData="M54,38 A2.4,2.4 0 1,1 53.9,38" />
 </vector>
