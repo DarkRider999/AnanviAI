@@ -24,6 +24,8 @@ class UserPreferencesDataStore @Inject constructor(
         private val KEY_SELECTED_PROVIDER_ID = stringPreferencesKey("selected_provider_id")
         private val KEY_SELECTED_MODEL_ID = stringPreferencesKey("selected_model_id")
         private val KEY_THEME = stringPreferencesKey("app_theme")
+        private val KEY_JARVIS_BASE_URL = stringPreferencesKey("jarvis_base_url")
+        private val KEY_HERMES_BASE_URL = stringPreferencesKey("hermes_base_url")
     }
 
     val isOnboardingCompleted: Flow<Boolean> = context.dataStore.data.map { preferences ->
@@ -49,6 +51,22 @@ class UserPreferencesDataStore @Inject constructor(
             preferences[KEY_SELECTED_PROVIDER_ID] = providerId
             preferences[KEY_SELECTED_MODEL_ID] = modelId
         }
+    }
+
+    val jarvisBaseUrl: Flow<String> = context.dataStore.data.map { preferences ->
+        preferences[KEY_JARVIS_BASE_URL] ?: ""
+    }
+
+    val hermesBaseUrl: Flow<String> = context.dataStore.data.map { preferences ->
+        preferences[KEY_HERMES_BASE_URL] ?: ""
+    }
+
+    suspend fun saveJarvisBaseUrl(url: String) {
+        context.dataStore.edit { preferences -> preferences[KEY_JARVIS_BASE_URL] = url.trim() }
+    }
+
+    suspend fun saveHermesBaseUrl(url: String) {
+        context.dataStore.edit { preferences -> preferences[KEY_HERMES_BASE_URL] = url.trim() }
     }
 
     val appTheme: Flow<String> = context.dataStore.data.map { preferences ->
