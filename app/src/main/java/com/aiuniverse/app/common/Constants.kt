@@ -4,6 +4,7 @@ object Constants {
     const val DATABASE_NAME = "ananviai_db"
     const val PREFERENCES_NAME = "ananviai_prefs"
     const val ENCRYPTED_PREFS_NAME = "ananviai_secure_keys"
+    const val ENCRYPTED_PREFS_NAME_V2 = "ananviai_secure_keys_v2"
 
     // Endpoints
     const val HUGGING_FACE_BASE_URL = "https://api-inference.huggingface.co/"
