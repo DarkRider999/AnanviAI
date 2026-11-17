@@ -7,7 +7,7 @@ object Constants {
 
     // Endpoints
     const val HUGGING_FACE_BASE_URL = "https://api-inference.huggingface.co/"
-    const val HUGGING_FACE_ROUTER_URL = "https://router.huggingface.co/hf-inference/v1/"
+    const val HUGGING_FACE_ROUTER_URL = "https://router.huggingface.co/v1/"
     const val OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1/"
     const val GROQ_BASE_URL = "https://api.groq.com/openai/v1/"
     const val TOGETHER_BASE_URL = "https://api.together.xyz/v1/"
