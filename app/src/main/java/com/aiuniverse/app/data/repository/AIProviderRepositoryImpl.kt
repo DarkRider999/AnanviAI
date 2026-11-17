@@ -84,7 +84,7 @@ class AIProviderRepositoryImpl @Inject constructor(
         AIProvider(
             id = "gemini",
             name = "Google Gemini",
-            description = "Gemini 1.5 Pro and Flash multimodal intelligence.",
+            description = "Direct Google AI Studio API. Includes limited free-tier Gemini models; quotas and data terms apply.",
             baseUrl = "https://generativelanguage.googleapis.com/v1beta/openai",
             requiresApiKey = true,
             defaultModel = "gemini-3.8-flash",
@@ -357,9 +357,8 @@ class AIProviderRepositoryImpl @Inject constructor(
         return providerDao.getAllProviders().map { entities ->
             val storedById = entities.associateBy { it.id }.toMutableMap()
             val merged = staticProviders.map { provider ->
-                val stored = storedById.remove(provider.id)
-                val effective = provider
-                effective.copy(
+                storedById.remove(provider.id)
+                provider.copy(
                     isConfigured = !effective.requiresApiKey || keyStorage.hasApiKey(effective.id)
                 )
             }
@@ -374,7 +373,7 @@ class AIProviderRepositoryImpl @Inject constructor(
 
     override fun getProvider(id: String): Flow<AIProvider?> {
         return providerDao.getProviderFlow(id).map { entity ->
-            val p = entity?.toDomain() ?: staticProviders.find { it.id == id }
+            val p = staticProviders.find { it.id == id } ?: entity?.toDomain()
             p?.copy(isConfigured = !p.requiresApiKey || keyStorage.hasApiKey(p.id))
         }
     }
