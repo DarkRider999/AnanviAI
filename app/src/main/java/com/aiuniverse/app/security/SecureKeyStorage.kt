@@ -10,8 +10,12 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Handles hardware-backed encrypted storage of user API keys (HuggingFace, OpenRouter, Groq, OpenAI, etc.).
- * Guarantees cryptographic protection backed by Android Keystore.
+ * Stores provider credentials only in EncryptedSharedPreferences backed by Android Keystore.
+ *
+ * Existing credentials are migrated from the previous store on first access. The legacy
+ * file is deleted only after the encrypted destination has committed successfully.
+ * There is deliberately no plaintext fallback: if Keystore is unavailable, key operations
+ * fail closed instead of silently writing secrets in ordinary SharedPreferences.
  */
 @Singleton
 class SecureKeyStorage @Inject constructor(
@@ -23,16 +27,86 @@ class SecureKeyStorage @Inject constructor(
                 .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
                 .build()
 
-            EncryptedSharedPreferences.create(
+            val encrypted = EncryptedSharedPreferences.create(
                 context,
-                Constants.ENCRYPTED_PREFS_NAME,
+                Constants.ENCRYPTED_PREFS_NAME_V2,
                 masterKey,
                 EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                 EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             )
+
+            migrateLegacyKeys(masterKey, encrypted)
+            encrypted
         } catch (e: Exception) {
-            // Fallback for edge cases/testing
-            context.getSharedPreferences(Constants.ENCRYPTED_PREFS_NAME, Context.MODE_PRIVATE)
+            throw IllegalStateException(
+                "Secure API-key storage is unavailable. Credentials were not written to plaintext storage.",
+                e
+            )
+        }
+    }
+
+    private fun migrateLegacyKeys(masterKey: MasterKey, destination: SharedPreferences) {
+        val legacyName = Constants.ENCRYPTED_PREFS_NAME
+
+        // First try the previous EncryptedSharedPreferences format.
+        val oldEncrypted = try {
+            EncryptedSharedPreferences.create(
+                context,
+                legacyName,
+                masterKey,
+                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            )
+        } catch (_: Exception) {
+            null
+        }
+
+        val encryptedEntries = try {
+            oldEncrypted?.all
+        } catch (_: Exception) {
+            null
+        }
+
+        if (!encryptedEntries.isNullOrEmpty()) {
+            val editor = destination.edit()
+            encryptedEntries.forEach { (key, value) ->
+                when (value) {
+                    is String -> editor.putString(key, value)
+                    is Boolean -> editor.putBoolean(key, value)
+                    is Int -> editor.putInt(key, value)
+                    is Long -> editor.putLong(key, value)
+                    is Float -> editor.putFloat(key, value)
+                    else -> Unit
+                }
+            }
+            if (!editor.commit()) {
+                throw IllegalStateException("Could not migrate existing encrypted API keys.")
+            }
+            context.deleteSharedPreferences(legacyName)
+            return
+        }
+
+        // Older app builds had a plaintext fallback. Migrate only clearly named API-key
+        // entries; do not copy encrypted/opaque values from an unreadable legacy file.
+        val legacyPlain = context.getSharedPreferences(legacyName, Context.MODE_PRIVATE)
+        val plainEntries = legacyPlain.all
+            .filterKeys { it.startsWith(KEY_PREFIX) }
+            .mapNotNull { (key, value) ->
+                (value as? String)?.let { key to it }
+            }
+
+        if (plainEntries.isNotEmpty()) {
+            val editor = destination.edit()
+            plainEntries.forEach { (key, value) -> editor.putString(key, value) }
+            if (!editor.commit()) {
+                throw IllegalStateException("Could not securely migrate legacy API keys.")
+            }
+            val cleanup = legacyPlain.edit()
+            plainEntries.forEach { (key, _) -> cleanup.remove(key) }
+            if (!cleanup.commit()) {
+                // The encrypted copy is already safe; leave the legacy file for manual cleanup.
+                return
+            }
         }
     }
 
