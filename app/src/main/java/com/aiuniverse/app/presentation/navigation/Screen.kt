@@ -16,4 +16,5 @@ sealed class Screen(val route: String) {
     data object Settings : Screen("settings_screen")
     data object Profile : Screen("profile_screen")
     data object ApiManagement : Screen("api_management_screen")
+    data object CommandCenter : Screen("command_center_screen")
 }

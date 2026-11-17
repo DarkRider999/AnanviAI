@@ -57,16 +57,16 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.1.1
-          name: "AnanviAI v1.1.1 (Debug APK)"
+          tag_name: v1.2.0
+          name: "AnanviAI v1.2.0 (Debug APK)"
           body: |
-            ### AnanviAI v1.1.1 Debug Build
+            ### AnanviAI v1.2.0 Debug Build
             CI-built debug APK for testing. This is not a Play Store-signed production release.
             - Preserves existing Hugging Face, OpenRouter, Groq, Together AI, Ollama, OpenAI, Anthropic and Gemini provider IDs/keys
             - Adds direct Gemini, NVIDIA NIM, Cloudflare Workers AI, SambaNova and Cohere trial integrations
             - Adds a free-first model catalogue with free-tier/trial labels and quota notes
             - Migrates existing API keys into encrypted Android Keystore-backed preferences and excludes credential files from backups
-            - Side-by-Side Model Comparison
+            - Command Center: JARVIS-X and Hermes endpoint checks, social connector setup, GitHub project shortcuts\n            - Command Center integration architecture and security documentation\n            - Side-by-Side Model Comparison
             - AI Tools & Image Generation
           files: app/build/outputs/apk/debug/*.apk
         env:
