@@ -85,10 +85,37 @@ class AIProviderRepositoryImpl @Inject constructor(
             id = "gemini",
             name = "Google Gemini",
             description = "Gemini 1.5 Pro and Flash multimodal intelligence.",
-            baseUrl = "https://openrouter.ai/api/v1",
+            baseUrl = "https://generativelanguage.googleapis.com/v1beta/openai",
             requiresApiKey = true,
-            defaultModel = "google/gemini-flash-1.5",
-            websiteUrl = "https://aistudio.google.com"
+            defaultModel = "gemini-3.8-flash",
+            websiteUrl = "https://aistudio.google.com/apikey"
+        ),
+        AIProvider(
+            id = "nvidia",
+            name = "NVIDIA NIM",
+            description = "Hosted NVIDIA API catalog. Selected endpoints are currently marked free; availability and limits vary by model.",
+            baseUrl = "https://integrate.api.nvidia.com/v1",
+            requiresApiKey = true,
+            defaultModel = "openai/gpt-oss-20b",
+            websiteUrl = "https://build.nvidia.com/"
+        ),
+        AIProvider(
+            id = "sambanova",
+            name = "SambaNova Cloud",
+            description = "OpenAI-compatible inference API. Free access and daily/model quotas depend on current account eligibility.",
+            baseUrl = "https://api.sambanova.ai/v1",
+            requiresApiKey = true,
+            defaultModel = "DeepSeek-R1",
+            websiteUrl = "https://cloud.sambanova.ai/"
+        ),
+        AIProvider(
+            id = "cohere",
+            name = "Cohere (Trial)",
+            description = "Evaluation/trial API access only; not a guaranteed ongoing free tier. Check model pricing and trial limits before use.",
+            baseUrl = "https://api.cohere.ai/compatibility/v1",
+            requiresApiKey = true,
+            defaultModel = "command-r7b-12-2024",
+            websiteUrl = "https://dashboard.cohere.com/api-keys"
         )
     )
 
@@ -236,21 +263,75 @@ class AIProviderRepositoryImpl @Inject constructor(
             contextWindow = 128000,
             isFree = false,
             category = "Flagship"
+        ),
+        // Direct Google AI Studio free-tier models. Free quotas are limited and can change.
+        AIModel(
+            id = "gemini-3.8-flash",
+            name = "Gemini 3.8 Flash",
+            providerId = "gemini",
+            description = "Google AI Studio free-tier model; limited quotas apply and free-tier data terms differ from paid usage.",
+            contextWindow = 1000000,
+            isFree = true,
+            category = "Free Tier",
+            isMultimodal = true
+        ),
+        AIModel(
+            id = "gemini-3.1-flash-lite",
+            name = "Gemini 3.1 Flash-Lite",
+            providerId = "gemini",
+            description = "Lightweight Gemini model listed with free input and output on the current free tier; quota applies.",
+            contextWindow = 1000000,
+            isFree = true,
+            category = "Free Tier",
+            isMultimodal = true
+        ),
+        // NVIDIA Build hosted free endpoint (check endpoint status in NVIDIA catalog).
+        AIModel(
+            id = "openai/gpt-oss-20b",
+            name = "GPT-OSS 20B (NVIDIA)",
+            providerId = "nvidia",
+            description = "NVIDIA Build free endpoint listing; model availability and limits may change.",
+            contextWindow = 131072,
+            isFree = true,
+            category = "Free Endpoint"
+        ),
+        // SambaNova free access is account/quota dependent; availability is not guaranteed.
+        AIModel(
+            id = "DeepSeek-R1",
+            name = "DeepSeek R1 (SambaNova)",
+            providerId = "sambanova",
+            description = "SambaNova hosted reasoning model. Check current dashboard quota and model availability.",
+            contextWindow = 65536,
+            isFree = true,
+            category = "Limited Free Tier"
+        ),
+        // Cohere trial keys are evaluation-only, not a perpetual free API.
+        AIModel(
+            id = "command-r7b-12-2024",
+            name = "Command R7B (Trial)",
+            providerId = "cohere",
+            description = "Cohere evaluation model. Trial access is limited; check pricing before production use.",
+            contextWindow = 128000,
+            isFree = false,
+            category = "Trial"
         )
     )
 
     override fun getProviders(): Flow<List<AIProvider>> {
         return providerDao.getAllProviders().map { entities ->
-            if (entities.isEmpty()) {
-                staticProviders.map { p ->
-                    p.copy(isConfigured = !p.requiresApiKey || keyStorage.hasApiKey(p.id))
-                }
-            } else {
-                entities.map { entity ->
-                    entity.toDomain().copy(
-                        isConfigured = !entity.requiresApiKey || keyStorage.hasApiKey(entity.id)
-                    )
-                }
+            val storedById = entities.associateBy { it.id }
+            val merged = staticProviders.map { provider ->
+                val stored = storedById.remove(provider.id)
+                val effective = stored?.toDomain() ?: provider
+                effective.copy(
+                    isConfigured = !effective.requiresApiKey || keyStorage.hasApiKey(effective.id)
+                )
+            }
+            // Preserve custom providers already stored in Room while always exposing new built-ins.
+            merged + storedById.values.map { entity ->
+                entity.toDomain().copy(
+                    isConfigured = !entity.requiresApiKey || keyStorage.hasApiKey(entity.id)
+                )
             }
         }
     }
