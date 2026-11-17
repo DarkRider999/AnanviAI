@@ -253,7 +253,7 @@ class ChatRepositoryImpl @Inject constructor(
                     )
                 }
 
-                val cloudflareParts = if (providerId == "cloudflare") apiKey.split("|", limit = 2) else emptyList()
+                val cloudflareParts = if (providerId == "cloudflare") apiKey.split("|", limit = 2).map { it.trim() } else emptyList()
                 if (providerId == "cloudflare" && (cloudflareParts.size != 2 ||
                         cloudflareParts[0].isBlank() || cloudflareParts[1].isBlank())
                 ) {
