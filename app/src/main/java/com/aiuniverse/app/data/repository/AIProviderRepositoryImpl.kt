@@ -143,37 +143,37 @@ class AIProviderRepositoryImpl @Inject constructor(
             id = "meta-llama/Llama-3.1-8B-Instruct",
             name = "Llama 3.1 8B Instruct",
             providerId = "huggingface",
-            description = "Meta's highly optimized, state-of-the-art open model with 128k context.",
+            description = "Open weights are free to download; hosted Hugging Face Inference Providers may require paid credits.",
             contextWindow = 131072,
-            isFree = true,
-            category = "General"
+            isFree = false,
+            category = "Open Weights (Hosted API may be paid)"
         ),
         AIModel(
             id = "deepseek-ai/DeepSeek-R1",
             name = "DeepSeek R1 Reasoning",
             providerId = "huggingface",
-            description = "Breakthrough open reasoning model competing with OpenAI o1.",
+            description = "Open weights are available; hosted Hugging Face inference can require paid credits.",
             contextWindow = 65536,
-            isFree = true,
-            category = "Reasoning & Math"
+            isFree = false,
+            category = "Open Weights (Hosted API may be paid)"
         ),
         AIModel(
             id = "mistralai/Mistral-7B-Instruct-v0.3",
             name = "Mistral 7B Instruct",
             providerId = "huggingface",
-            description = "Fast, versatile European language model with function calling.",
+            description = "Open weights are available; hosted Hugging Face inference can require paid credits.",
             contextWindow = 32768,
-            isFree = true,
-            category = "General"
+            isFree = false,
+            category = "Open Weights (Hosted API may be paid)"
         ),
         AIModel(
             id = "Qwen/Qwen2.5-7B-Instruct",
             name = "Qwen 2.5 7B",
             providerId = "huggingface",
-            description = "Alibaba's benchmark leader in math, coding, and multilingual tasks.",
+            description = "Open weights are available; hosted Hugging Face inference can require paid credits.",
             contextWindow = 32768,
-            isFree = true,
-            category = "Multilingual"
+            isFree = false,
+            category = "Open Weights (Hosted API may be paid)"
         ),
 
         // OpenRouter Free Models
