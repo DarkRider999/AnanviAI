@@ -9,8 +9,8 @@ class CreateChatSessionUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         title: String = "New Conversation",
-        providerId: String = "huggingface",
-        modelId: String = "meta-llama/Llama-3.1-8B-Instruct",
+        providerId: String = "gemini",
+        modelId: String = "gemini-3.8-flash",
         systemPrompt: String? = null
     ): ChatSession {
         return repository.createSession(title, providerId, modelId, systemPrompt)
