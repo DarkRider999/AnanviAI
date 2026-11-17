@@ -386,7 +386,7 @@ class AIProviderRepositoryImpl @Inject constructor(
             val merged = staticProviders.map { provider ->
                 storedById.remove(provider.id)
                 provider.copy(
-                    isConfigured = !effective.requiresApiKey || keyStorage.hasApiKey(effective.id)
+                    isConfigured = !provider.requiresApiKey || keyStorage.hasApiKey(provider.id)
                 )
             }
             // Preserve custom providers already stored in Room while always exposing new built-ins.
