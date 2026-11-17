@@ -33,6 +33,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +47,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -96,11 +98,14 @@ private val connectorHttpClient = OkHttpClient.Builder()
     .build()
 
 @Composable
-fun CommandCenterScreen(onNavigateBack: () -> Unit) {
+fun CommandCenterScreen(
+    onNavigateBack: () -> Unit,
+    viewModel: CommandCenterViewModel = hiltViewModel()
+) {
     val uriHandler = LocalUriHandler.current
     val scope = rememberCoroutineScope()
-    var jarvisUrl by rememberSaveable { mutableStateOf("") }
-    var hermesUrl by rememberSaveable { mutableStateOf("") }
+    val jarvisUrl by viewModel.jarvisBaseUrl.collectAsState(initial = "")
+    val hermesUrl by viewModel.hermesBaseUrl.collectAsState(initial = "")
     var jarvisStatus by rememberSaveable { mutableStateOf("Not configured") }
     var hermesStatus by rememberSaveable { mutableStateOf("Not configured") }
     var checking by remember { mutableStateOf(false) }
@@ -156,7 +161,7 @@ fun CommandCenterScreen(onNavigateBack: () -> Unit) {
             SectionCard(title = "AI SYSTEMS", subtitle = "Connect the Android app to your workstation services") {
                 OutlinedTextField(
                     value = jarvisUrl,
-                    onValueChange = { jarvisUrl = it },
+                    onValueChange = { viewModel.saveJarvisBaseUrl(it) },
                     modifier = Modifier.fillMaxWidth(),
                     label = { Text("JARVIS-X HTTPS base URL") },
                     placeholder = { Text("https://your-private-host.example") },
@@ -170,7 +175,7 @@ fun CommandCenterScreen(onNavigateBack: () -> Unit) {
                 }
                 OutlinedTextField(
                     value = hermesUrl,
-                    onValueChange = { hermesUrl = it },
+                    onValueChange = { viewModel.saveHermesBaseUrl(it) },
                     modifier = Modifier.fillMaxWidth(),
                     label = { Text("Hermes dashboard HTTPS URL") },
                     placeholder = { Text("https://your-private-host.example") },
