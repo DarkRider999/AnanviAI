@@ -12,8 +12,6 @@ import com.aiuniverse.app.data.remote.api.OpenRouterApi
 import com.aiuniverse.app.data.remote.api.TogetherApi
 import com.aiuniverse.app.data.remote.dto.ChatCompletionRequest
 import com.aiuniverse.app.data.remote.dto.ChatMessageDto
-import com.aiuniverse.app.data.remote.dto.HuggingFaceInferenceRequest
-import com.aiuniverse.app.data.remote.dto.HuggingFaceParameters
 import com.aiuniverse.app.data.remote.sse.SseStreamParser
 import com.aiuniverse.app.domain.model.ChatSession
 import com.aiuniverse.app.domain.model.Message
@@ -146,29 +144,36 @@ class ChatRepositoryImpl @Inject constructor(
 
         when (providerId.lowercase()) {
             "huggingface" -> {
-                // Try Hugging Face Router endpoint first, fall back to direct model endpoint
-                try {
-                    val response = huggingFaceApi.createChatCompletionStream(authHeader, request)
-                    val body = response.body()
-                    if (response.isSuccessful && body != null) {
-                        sseParser.parseOpenAiFormatStream(body).collect { emit(it) }
-                        return@flow
-                    }
-                } catch (_: Exception) {}
+                if (apiKey.isBlank()) {
+                    throw IllegalStateException(
+                        "Add a Hugging Face access token in API Keys before using Hugging Face models."
+                    )
+                }
 
-                // Fallback to direct inference endpoint
-                val lastPrompt = messages.lastOrNull { it.role == MessageRole.USER }?.content ?: ""
-                val hfRequest = HuggingFaceInferenceRequest(
-                    inputs = lastPrompt,
-                    parameters = HuggingFaceParameters(maxNewTokens = 2048)
+                // Hugging Face's current OpenAI-compatible Inference Providers route.
+                // Do not fall back to the retired api-inference.huggingface.co/models path:
+                // it is not a chat-completions endpoint and can return an HTML error page.
+                val response = huggingFaceApi.createChatCompletionStream(
+                    authHeader = authHeader,
+                    request = request
                 )
-                val response = huggingFaceApi.streamModelInference(modelId, authHeader, hfRequest)
                 val body = response.body()
+
                 if (response.isSuccessful && body != null) {
-                    sseParser.parseHuggingFaceStream(body).collect { emit(it) }
+                    sseParser.parseOpenAiFormatStream(body).collect { emit(it) }
                 } else {
-                    val errorMsg = response.errorBody()?.string() ?: "Failed to stream from Hugging Face"
-                    throw RuntimeException(errorMsg)
+                    val errorBody = response.errorBody()?.string().orEmpty()
+                    val isHtml = errorBody.contains("<html", ignoreCase = true) ||
+                        errorBody.contains("<!doctype html", ignoreCase = true)
+                    val detail = when {
+                        isHtml -> "The server returned an HTML page instead of an API response. " +
+                            "Check the model/provider availability and Hugging Face access token."
+                        errorBody.isNotBlank() -> errorBody.take(500)
+                        else -> "No error details were returned."
+                    }
+                    throw IllegalStateException(
+                        "Hugging Face request failed (HTTP ${response.code()}): $detail"
+                    )
                 }
             }
 
