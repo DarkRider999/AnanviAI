@@ -116,6 +116,15 @@ class AIProviderRepositoryImpl @Inject constructor(
             requiresApiKey = true,
             defaultModel = "command-r7b-12-2024",
             websiteUrl = "https://dashboard.cohere.com/api-keys"
+        ),
+        AIProvider(
+            id = "cloudflare",
+            name = "Cloudflare Workers AI",
+            description = "Free Workers plan includes 10,000 Neurons/day. Requires Account ID and API token entered as ACCOUNT_ID|API_TOKEN.",
+            baseUrl = "https://api.cloudflare.com/client/v4/accounts/{account_id}/ai/v1",
+            requiresApiKey = true,
+            defaultModel = "@cf/zai-org/glm-4.7-flash",
+            websiteUrl = "https://dash.cloudflare.com/"
         )
     )
 
@@ -314,15 +323,42 @@ class AIProviderRepositoryImpl @Inject constructor(
             contextWindow = 128000,
             isFree = false,
             category = "Trial"
+        ),
+        AIModel(
+            id = "@cf/zai-org/glm-4.7-flash",
+            name = "GLM 4.7 Flash (Cloudflare)",
+            providerId = "cloudflare",
+            description = "Listed by Cloudflare as available on the Workers Free plan. 10,000 Neurons/day shared across the account; model limits apply.",
+            contextWindow = 128000,
+            isFree = true,
+            category = "Free Tier"
+        ),
+        AIModel(
+            id = "@cf/google/gemma-4-26b-a4b-it",
+            name = "Gemma 4 26B (Cloudflare)",
+            providerId = "cloudflare",
+            description = "Cloudflare Workers AI free-plan model; shared daily Neurons quota applies.",
+            contextWindow = 128000,
+            isFree = true,
+            category = "Free Tier"
+        ),
+        AIModel(
+            id = "@cf/nvidia/nemotron-3-120b-a12b",
+            name = "Nemotron 3 120B (Cloudflare)",
+            providerId = "cloudflare",
+            description = "Cloudflare Workers AI free-plan model; shared daily Neurons quota applies.",
+            contextWindow = 128000,
+            isFree = true,
+            category = "Free Tier"
         )
     )
 
     override fun getProviders(): Flow<List<AIProvider>> {
         return providerDao.getAllProviders().map { entities ->
-            val storedById = entities.associateBy { it.id }
+            val storedById = entities.associateBy { it.id }.toMutableMap()
             val merged = staticProviders.map { provider ->
                 val stored = storedById.remove(provider.id)
-                val effective = stored?.toDomain() ?: provider
+                val effective = provider
                 effective.copy(
                     isConfigured = !effective.requiresApiKey || keyStorage.hasApiKey(effective.id)
                 )
