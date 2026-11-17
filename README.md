@@ -101,6 +101,7 @@ The built-in catalogue includes existing integrations and these additional OpenA
 | Google Gemini | Limited free tier for selected models | [Google AI Studio](https://aistudio.google.com/apikey) |
 | NVIDIA NIM | Selected catalog endpoints are marked free; availability varies | [NVIDIA Build](https://build.nvidia.com/) |
 | Cloudflare Workers AI | Workers Free includes 10,000 Neurons/day; model restrictions apply | [Cloudflare Dashboard](https://dash.cloudflare.com/) |
+| Z.AI | GLM-4.7-Flash and selected GLM Flash models are listed as free; limits are shown in the console | [Z.AI API Keys](https://z.ai/manage-apikey/apikey-list) |
 | SambaNova Cloud | Free access/quotas depend on current account eligibility | [SambaNova Cloud](https://cloud.sambanova.ai/) |
 | Cohere | Trial/evaluation access only; not a perpetual free tier | [Cohere API Keys](https://dashboard.cohere.com/api-keys) |
 | OpenRouter | Models ending in `:free` have a limited free quota | [OpenRouter Keys](https://openrouter.ai/keys) |
