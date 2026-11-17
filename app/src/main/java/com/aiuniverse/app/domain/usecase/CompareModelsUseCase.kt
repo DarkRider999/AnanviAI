@@ -26,42 +26,43 @@ class CompareModelsUseCase @Inject constructor(
             content = prompt
         )
 
-        var respA = ""
-        var respB = ""
-
-        val timeA = measureTimeMillis {
-            val deferredA = async {
-                try {
-                    val tokens = chatRepository.streamResponse(
+        // Launch both requests before awaiting either one so the comparison is genuinely parallel.
+        val deferredA = async {
+            var responseText = ""
+            val elapsed = measureTimeMillis {
+                responseText = try {
+                    chatRepository.streamResponse(
                         providerId = modelA.providerId,
                         modelId = modelA.id,
                         messages = listOf(userMsg),
                         systemPrompt = null
-                    ).toList()
-                    tokens.joinToString("")
+                    ).toList().joinToString("")
                 } catch (e: Exception) {
-                    "Model A error: ${e.localizedMessage}"
+                    "Model A error: ${e.localizedMessage?.take(500) ?: "Request failed"}"
                 }
             }
-            respA = deferredA.await()
+            responseText to elapsed
         }
 
-        val timeB = measureTimeMillis {
-            val deferredB = async {
-                try {
-                    val tokens = chatRepository.streamResponse(
+        val deferredB = async {
+            var responseText = ""
+            val elapsed = measureTimeMillis {
+                responseText = try {
+                    chatRepository.streamResponse(
                         providerId = modelB.providerId,
                         modelId = modelB.id,
                         messages = listOf(userMsg),
                         systemPrompt = null
-                    ).toList()
-                    tokens.joinToString("")
+                    ).toList().joinToString("")
                 } catch (e: Exception) {
-                    "Model B error: ${e.localizedMessage}"
+                    "Model B error: ${e.localizedMessage?.take(500) ?: "Request failed"}"
                 }
             }
-            respB = deferredB.await()
+            responseText to elapsed
         }
+
+        val (respA, timeA) = deferredA.await()
+        val (respB, timeB) = deferredB.await()
 
         ModelComparisonResult(
             prompt = prompt,

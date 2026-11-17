@@ -40,6 +40,9 @@ jobs:
       - name: Make Gradle Wrapper Executable
         run: chmod +x gradlew
 
+      - name: Run Unit Tests
+        run: ./gradlew testDebugUnitTest --stacktrace --no-daemon
+
       - name: Build Debug APK
         run: ./gradlew assembleDebug --stacktrace --no-daemon
 
@@ -54,10 +57,10 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.0.0
-          name: "AnanviAI v1.0.0 (Debug APK)"
+          tag_name: v1.0.1
+          name: "AnanviAI v1.0.1 (Debug APK)"
           body: |
-            ### AnanviAI v1.0.0 Production Release
+            ### AnanviAI v1.0.1 Debug Build
             Production build of AnanviAI multi-model assistant.
             - Supports Hugging Face, OpenRouter, Groq, Ollama, OpenAI
             - Free models: Llama 3.3, DeepSeek R1, Qwen 2.5, Gemma 2
