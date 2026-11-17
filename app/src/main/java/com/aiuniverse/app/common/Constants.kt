@@ -1,9 +1,9 @@
 package com.aiuniverse.app.common
 
 object Constants {
-    const val DATABASE_NAME = "ai_universe_db"
-    const val PREFERENCES_NAME = "ai_universe_prefs"
-    const val ENCRYPTED_PREFS_NAME = "ai_universe_secure_keys"
+    const val DATABASE_NAME = "ananviai_db"
+    const val PREFERENCES_NAME = "ananviai_prefs"
+    const val ENCRYPTED_PREFS_NAME = "ananviai_secure_keys"
 
     // Endpoints
     const val HUGGING_FACE_BASE_URL = "https://api-inference.huggingface.co/"

@@ -178,7 +178,7 @@ fun OnboardingScreen(
                 }
 
                 CosmicGradientButton(
-                    text = if (pagerState.currentPage == slides.size - 1) "Enter AI Universe" else "Continue",
+                    text = if (pagerState.currentPage == slides.size - 1) "Enter AnanviAI" else "Continue",
                     onClick = {
                         if (pagerState.currentPage < slides.size - 1) {
                             scope.launch {

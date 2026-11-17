@@ -16,7 +16,7 @@ interface OpenRouterApi {
     suspend fun createChatCompletionStream(
         @Header("Authorization") authHeader: String,
         @Header("HTTP-Referer") referer: String = "https://aiuniverse.app",
-        @Header("X-Title") appTitle: String = "AI Universe Android",
+        @Header("X-Title") appTitle: String = "AnanviAI Android",
         @Body request: ChatCompletionRequest
     ): Response<ResponseBody>
 
@@ -24,7 +24,7 @@ interface OpenRouterApi {
     suspend fun createChatCompletion(
         @Header("Authorization") authHeader: String,
         @Header("HTTP-Referer") referer: String = "https://aiuniverse.app",
-        @Header("X-Title") appTitle: String = "AI Universe Android",
+        @Header("X-Title") appTitle: String = "AnanviAI Android",
         @Body request: ChatCompletionRequest
     ): Response<ChatCompletionResponse>
 }

@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AI Universe"
+rootProject.name = "AnanviAI"
 include(":app")

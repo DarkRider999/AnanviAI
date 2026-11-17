@@ -108,7 +108,7 @@ fun HomeScreen(
                 ) {
                     Column {
                         Text(
-                            text = "AI UNIVERSE",
+                            text = "AnanviAI",
                             color = Color.White,
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Bold,

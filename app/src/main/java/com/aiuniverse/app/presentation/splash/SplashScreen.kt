@@ -87,14 +87,14 @@ fun SplashScreen(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_ai_logo),
-                contentDescription = "AI Universe",
+                contentDescription = "AnanviAI",
                 modifier = Modifier.size(110.dp)
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "AI UNIVERSE",
+                text = "AnanviAI",
                 color = Color.White,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,

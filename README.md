@@ -1,6 +1,6 @@
-# AI Universe - Multi-Model Android Assistant
+# AnanviAI - Multi-Model Android Assistant
 
-AI Universe is a production-grade, enterprise-ready Android AI assistant application built with modern Android development standards (Kotlin 2.0, Jetpack Compose, Material 3, Clean Architecture, Hilt DI, Room Database, and Retrofit with SSE streaming).
+AnanviAI is a production-grade, enterprise-ready Android AI assistant application built with modern Android development standards (Kotlin 2.0, Jetpack Compose, Material 3, Clean Architecture, Hilt DI, Room Database, and Retrofit with SSE streaming).
 
 ---
 

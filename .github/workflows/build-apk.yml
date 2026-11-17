@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    name: Build AI Universe Debug & Release APK
+    name: Build AnanviAI Debug & Release APK
     runs-on: ubuntu-latest
 
     steps:

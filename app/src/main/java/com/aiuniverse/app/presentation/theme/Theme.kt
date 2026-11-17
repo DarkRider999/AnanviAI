@@ -45,8 +45,8 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun AIUniverseTheme(
-    darkTheme: Boolean = true, // Default to stunning cosmic dark
+fun AnanviAITheme(
+    darkTheme: Boolean = true,
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {

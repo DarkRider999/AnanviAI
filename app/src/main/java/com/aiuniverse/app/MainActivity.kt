@@ -9,7 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.aiuniverse.app.presentation.navigation.NavGraph
-import com.aiuniverse.app.presentation.theme.AIUniverseTheme
+import com.aiuniverse.app.presentation.theme.AnanviAITheme
 import com.aiuniverse.app.presentation.theme.SpaceBlack
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            AIUniverseTheme(darkTheme = true) {
+            AnanviAITheme(darkTheme = true) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = SpaceBlack

@@ -23,7 +23,7 @@ class AuthHeaderInterceptor @Inject constructor(
             url.contains("huggingface.co") -> keyStorage.getApiKey("huggingface")
             url.contains("openrouter.ai") -> {
                 builder.header("HTTP-Referer", "https://aiuniverse.app")
-                builder.header("X-Title", "AI Universe Android")
+                builder.header("X-Title", "AnanviAI Android")
                 keyStorage.getApiKey("openrouter")
             }
             url.contains("api.groq.com") -> keyStorage.getApiKey("groq")

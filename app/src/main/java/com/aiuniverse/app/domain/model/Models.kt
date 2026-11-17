@@ -132,7 +132,7 @@ data class UserProfile(
     val name: String = "Cosmic Explorer",
     val email: String = "user@aiuniverse.local",
     val avatarUri: String? = null,
-    val customSystemPrompt: String = "You are AI Universe, a hyper-capable, versatile, and thoughtful assistant.",
+    val customSystemPrompt: String = "You are AnanviAI, a hyper-capable, versatile, and thoughtful assistant.",
     val totalTokensUsed: Long = 0L,
     val favoriteModelId: String = "meta-llama/Llama-3.1-8B-Instruct"
 )
