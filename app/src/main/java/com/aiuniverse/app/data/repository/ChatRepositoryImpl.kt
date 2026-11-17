@@ -4,6 +4,7 @@ import com.aiuniverse.app.data.local.dao.ChatSessionDao
 import com.aiuniverse.app.data.local.dao.MessageDao
 import com.aiuniverse.app.data.local.entity.ChatSessionEntity
 import com.aiuniverse.app.data.local.entity.MessageEntity
+import com.aiuniverse.app.data.remote.api.GenericOpenAiCompatibleApi
 import com.aiuniverse.app.data.remote.api.GroqApi
 import com.aiuniverse.app.data.remote.api.HuggingFaceChatApi
 import com.aiuniverse.app.data.remote.api.OllamaApi
@@ -35,6 +36,7 @@ class ChatRepositoryImpl @Inject constructor(
     private val openAiApi: OpenAIApi,
     private val ollamaApi: OllamaApi,
     private val togetherApi: TogetherApi,
+    private val genericApi: GenericOpenAiCompatibleApi,
     private val keyStorage: SecureKeyStorage,
     private val sseParser: SseStreamParser
 ) : ChatRepository {
@@ -241,6 +243,77 @@ class ChatRepositoryImpl @Inject constructor(
                 } else {
                     val err = response.errorBody()?.string() ?: "Together AI connection failed"
                     throw RuntimeException(err)
+                }
+            }
+
+            "gemini", "nvidia", "sambanova", "cohere", "zai" -> {
+                if (apiKey.isBlank()) {
+                    throw IllegalStateException(
+                        "Add an API key for ${providerId} in Settings > API Keys."
+                    )
+                }
+
+                val endpoint = when (providerId.lowercase()) {
+                    "gemini" -> "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
+                    "nvidia" -> "https://integrate.api.nvidia.com/v1/chat/completions"
+                    "sambanova" -> "https://api.sambanova.ai/v1/chat/completions"
+                    "cohere" -> "https://api.cohere.ai/compatibility/v1/chat/completions"
+                    "zai" -> "https://api.z.ai/api/paas/v4/chat/completions"
+                    else -> error("Unsupported provider: $providerId")
+                }
+
+                // Keep compatibility with the old Gemini model ID saved by v1.0.0.
+                val compatibleRequest = if (
+                    providerId == "gemini" &&
+                    request.model == "google/gemini-flash-1.5"
+                ) {
+                    request.copy(model = "gemini-3.8-flash")
+                } else request
+
+                val response = genericApi.createChatCompletionStream(
+                    url = endpoint,
+                    authorization = authHeader,
+                    request = compatibleRequest
+                )
+                val body = response.body()
+                if (response.isSuccessful && body != null) {
+                    val contentType = body.contentType()?.toString().orEmpty()
+                    if (!contentType.contains("text/event-stream", ignoreCase = true)) {
+                        val unexpectedBody = body.string()
+                        val isHtml = unexpectedBody.contains("<html", ignoreCase = true) ||
+                            unexpectedBody.contains("<!doctype html", ignoreCase = true)
+                        val detail = if (isHtml) {
+                            "The provider returned an HTML page instead of an API response. " +
+                                "Check the endpoint, account access, and network connection."
+                        } else {
+                            "Expected a streaming response but received Content-Type: " +
+                                (contentType.ifBlank { "unknown" }) + ". " +
+                                unexpectedBody.take(300)
+                        }
+                        throw IllegalStateException(detail)
+                    }
+                    var receivedText = false
+                    sseParser.parseOpenAiFormatStream(body).collect {
+                        receivedText = true
+                        emit(it)
+                    }
+                    if (!receivedText) {
+                        throw IllegalStateException(
+                            "$providerId returned an empty response. Check model availability and free-tier quota."
+                        )
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string().orEmpty()
+                    val detail = when {
+                        errorBody.contains("<html", ignoreCase = true) ||
+                            errorBody.contains("<!doctype html", ignoreCase = true) ->
+                            "Provider returned an HTML error page. Check endpoint and account access."
+                        errorBody.isNotBlank() -> errorBody.take(500)
+                        else -> "No error details were returned."
+                    }
+                    throw IllegalStateException(
+                        "$providerId request failed (HTTP ${response.code()}): $detail"
+                    )
                 }
             }
 
