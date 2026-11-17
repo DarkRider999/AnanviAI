@@ -135,3 +135,10 @@ Provider quotas, eligible models, account requirements, rate limits and data-use
 
 OpenAI, Anthropic, Together AI and some models available through other providers may incur charges. They remain in the app for compatibility with your existing credentials; they are not represented as free services.
 
+
+
+## ANANVI branding and release safety
+
+- The red phoenix vector mark is shared by the launcher, splash screen and home header.
+- Android CI builds and uploads debug APK artifacts but does not automatically publish GitHub Releases.
+- Release variants are not signed with the debug key. See [Android release safety](docs/ANDROID_RELEASE_SAFETY.md) before configuring production signing or publishing.

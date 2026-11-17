@@ -1,4 +1,4 @@
-name: Build and Release APK
+name: Build and Test APK
 
 on:
   push:
@@ -12,7 +12,7 @@ jobs:
     name: Build AnanviAI APK
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
 
     steps:
       - name: Checkout Source Code
@@ -31,20 +31,14 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
-
-      - name: Generate Official Gradle Wrapper Jar
-        run: |
-          rm -f gradle/wrapper/gradle-wrapper.jar
-          gradle wrapper --gradle-version 8.10.2
-
-      - name: Make Gradle Wrapper Executable
-        run: chmod +x gradlew
+        with:
+          gradle-version: 8.10.2
 
       - name: Run Unit Tests
-        run: ./gradlew testDebugUnitTest --stacktrace --no-daemon
+        run: gradle testDebugUnitTest --stacktrace --no-daemon
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace --no-daemon
+        run: gradle assembleDebug --stacktrace --no-daemon
 
       - name: Upload Debug APK Artifact
         uses: actions/upload-artifact@v4
@@ -52,22 +46,3 @@ jobs:
           name: AnanviAI-Debug-APK
           path: app/build/outputs/apk/debug/*.apk
           retention-days: 14
-
-      - name: Create GitHub Release
-        if: github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v1.1.1
-          name: "AnanviAI v1.1.1 (Debug APK)"
-          body: |
-            ### AnanviAI v1.1.1 Debug Build
-            CI-built debug APK for testing. This is not a Play Store-signed production release.
-            - Preserves existing Hugging Face, OpenRouter, Groq, Together AI, Ollama, OpenAI, Anthropic and Gemini provider IDs/keys
-            - Adds direct Gemini, NVIDIA NIM, Cloudflare Workers AI, SambaNova and Cohere trial integrations
-            - Adds a free-first model catalogue with free-tier/trial labels and quota notes
-            - Migrates existing API keys into encrypted Android Keystore-backed preferences and excludes credential files from backups
-            - Side-by-Side Model Comparison
-            - AI Tools & Image Generation
-          files: app/build/outputs/apk/debug/*.apk
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

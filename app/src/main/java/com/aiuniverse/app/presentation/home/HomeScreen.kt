@@ -1,5 +1,6 @@
 package com.aiuniverse.app.presentation.home
 
+import androidx.compose.foundation.Image as ComposeImage
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -42,10 +43,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.aiuniverse.app.R
 import com.aiuniverse.app.presentation.components.GlassCard
 import com.aiuniverse.app.presentation.theme.CosmicViolet
 import com.aiuniverse.app.presentation.theme.DeepObsidian
@@ -106,7 +109,16 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        ComposeImage(
+                            painter = painterResource(id = R.drawable.ic_ai_logo),
+                            contentDescription = "ANANVI red phoenix logo",
+                            modifier = Modifier.size(44.dp)
+                        )
+                        Column {
                         Text(
                             text = "AnanviAI",
                             color = Color.White,
@@ -119,6 +131,7 @@ fun HomeScreen(
                             color = TextSecondary,
                             fontSize = 13.sp
                         )
+                        }
                     }
 
                     Row {
