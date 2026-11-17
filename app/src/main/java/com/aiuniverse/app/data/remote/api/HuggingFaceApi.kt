@@ -14,8 +14,7 @@ import retrofit2.http.Streaming
 interface HuggingFaceApi {
 
     /**
-     * OpenAI-compatible router endpoint for Hugging Face Inference API.
-     * URL: https://router.huggingface.co/hf-inference/v1/chat/completions
+     * Legacy Hugging Face model-task endpoint. Chat completions use HuggingFaceChatApi.
      */
     @Streaming
     @POST("chat/completions")
@@ -25,8 +24,7 @@ interface HuggingFaceApi {
     ): Response<ResponseBody>
 
     /**
-     * Direct Server-Sent Events inference endpoint for specific Hugging Face models.
-     * URL: https://api-inference.huggingface.co/models/{modelId}
+     * Legacy direct model-task endpoint retained for the existing image-generation flow.
      */
     @Streaming
     @POST("models/{modelId}")
