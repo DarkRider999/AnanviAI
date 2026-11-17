@@ -61,7 +61,7 @@ jobs:
           name: "AnanviAI v1.1.1 (Debug APK)"
           body: |
             ### AnanviAI v1.1.1 Debug Build
-            Production build of AnanviAI multi-model assistant.
+            CI-built debug APK for testing. This is not a Play Store-signed production release.
             - Preserves existing Hugging Face, OpenRouter, Groq, Together AI, Ollama, OpenAI, Anthropic and Gemini provider IDs/keys
             - Adds direct Gemini, NVIDIA NIM, Cloudflare Workers AI, SambaNova and Cohere trial integrations
             - Adds a free-first model catalogue with free-tier/trial labels and quota notes
