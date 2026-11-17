@@ -1,6 +1,7 @@
 package com.aiuniverse.app.di
 
 import com.aiuniverse.app.common.Constants
+import com.aiuniverse.app.data.remote.api.GenericOpenAiCompatibleApi
 import com.aiuniverse.app.data.remote.api.GroqApi
 import com.aiuniverse.app.data.remote.api.HuggingFaceApi
 import com.aiuniverse.app.data.remote.api.HuggingFaceChatApi
@@ -125,5 +126,20 @@ object NetworkModule {
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(TogetherApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGenericOpenAiCompatibleApi(
+        okHttpClient: OkHttpClient,
+        gson: Gson
+    ): GenericOpenAiCompatibleApi {
+        // @Url supplies a provider-specific HTTPS endpoint for every request.
+        return Retrofit.Builder()
+            .baseUrl("https://api.openai.com/")
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+            .create(GenericOpenAiCompatibleApi::class.java)
     }
 }
