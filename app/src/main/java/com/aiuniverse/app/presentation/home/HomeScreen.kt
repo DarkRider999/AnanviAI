@@ -1,6 +1,6 @@
 package com.aiuniverse.app.presentation.home
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.Image as ComposeImage
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -113,7 +113,7 @@ fun HomeScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Image(
+                        ComposeImage(
                             painter = painterResource(id = R.drawable.ic_ai_logo),
                             contentDescription = "ANANVI red phoenix logo",
                             modifier = Modifier.size(44.dp)
