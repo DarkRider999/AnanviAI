@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.Compare
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.VpnKey
 import androidx.compose.material3.FloatingActionButton
@@ -72,6 +73,7 @@ fun HomeScreen(
     onNavigateToSettings: () -> Unit,
     onNavigateToApiManagement: () -> Unit,
     onNavigateToHistory: () -> Unit,
+    onNavigateToCommandCenter: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val recentSessions by viewModel.recentSessions.collectAsState()
@@ -82,7 +84,8 @@ fun HomeScreen(
         QuickAction("Side-by-Side", Icons.Default.Compare, ElectricCyan, onNavigateToCompare),
         QuickAction("AI Tools", Icons.Default.AutoAwesome, CosmicViolet, onNavigateToTools),
         QuickAction("Generate Art", Icons.Default.Image, NeonEmerald, onNavigateToImageGen),
-        QuickAction("API Keys", Icons.Default.VpnKey, Color(0xFFFF9F43), onNavigateToApiManagement)
+        QuickAction("API Keys", Icons.Default.VpnKey, Color(0xFFFF9F43), onNavigateToApiManagement),
+        QuickAction("Command Center", Icons.Default.Share, ElectricCyan, onNavigateToCommandCenter)
     )
 
     Box(
