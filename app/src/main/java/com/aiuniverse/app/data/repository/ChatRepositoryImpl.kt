@@ -269,6 +269,7 @@ class ChatRepositoryImpl @Inject constructor(
                     "sambanova" -> "https://api.sambanova.ai/v1/chat/completions"
                     "cohere" -> "https://api.cohere.ai/compatibility/v1/chat/completions"
                     "cloudflare" -> "https://api.cloudflare.com/client/v4/accounts/${cloudflareParts[0]}/ai/v1/chat/completions"
+                    "zai" -> "https://api.z.ai/api/paas/v4/chat/completions"
                     else -> error("Unsupported provider: $providerId")
                 }
                 val providerAuthorization = if (providerId == "cloudflare") {
